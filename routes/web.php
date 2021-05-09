@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,16 +13,18 @@ use App\Http\Controllers\PostController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('index');
 
-Route::resources([
-    '/posts' => PostController::class,
-    '/home' => HomeController::class,
-    '/login' => LoginController::class
-]);
+Route::get('/home', function () {
+    return redirect('/posts');
+});
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/delete-blank-post', [App\Http\Controllers\PostController::class, 'deleteBlank']);
+Route::get('/posts-archive', [App\Http\Controllers\PostController::class, 'archive']);
+Route::get('/posts/{id}/restore', [App\Http\Controllers\PostController::class, 'restore']);
+Route::resource('/posts', App\Http\Controllers\PostController::class);
+Route::resource('/comments', App\Http\Controllers\CommentController::class);
